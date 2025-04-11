@@ -1,4 +1,5 @@
 ﻿using Ecomm_Database_Class.Model;
+using Ecomm_Database_Class.Model.Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace EcommerceWebApi.Controllers
         {
             try
             {
-                List<Cart> carts = await Task.Run(() => _cartOperations.GetAllCarts());
+                List<Cart> carts = _cartOperations.GetAllCarts();
                 return Ok(carts);
             }
             catch (Exception)
@@ -38,7 +39,7 @@ namespace EcommerceWebApi.Controllers
         {
             try
             {
-                Cart cart = await _cartOperations.GetCartByIdAsync(id);
+                Cart cart = await _cartOperations.GetAllCarts(id);
                 if (cart == null)
                 {
                     return NotFound($"Shopping cart with id {id} not found.");
@@ -60,7 +61,7 @@ namespace EcommerceWebApi.Controllers
                 try
                 {
                     await _cartOperations.AddCartAsync(cart);
-                    return CreatedAtAction(nameof(GetCartById), new { id = cart.CartItemID }, cart);
+                    return Ok(cart);
                 }
                 catch (Exception ex)
                 {

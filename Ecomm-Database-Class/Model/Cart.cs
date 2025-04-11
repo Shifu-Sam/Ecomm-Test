@@ -8,18 +8,25 @@ using System.Threading.Tasks;
 
 namespace Ecomm_Database_Class.Model
 {
-    public class Cart
-    {   
-        [Key]
-        public int CartItemID { get; set; }
+    namespace Ecomm_Database_Class.Model
+    {
+        public class Cart
+        {
+            [Key]
+            public int CartItemID { get; set; }
 
-        public int ProductID { get; set; }  
+            [ForeignKey("Product")]
+            public int ProductId { get; set; }
+            [ForeignKey("User")]
+            public int UserId { get; set; }
 
-        [Required(ErrorMessage = "Quantity is required.")]
-        public int Quantity { get; set; }  
+            [Required(ErrorMessage = "Quantity is required.")]
+            public int Quantity { get; set; }
 
-        [Required(ErrorMessage = "Total Price is required.")]
-        public decimal TotalPrice { get; set; } 
+            public bool IsActive { get; set; } = true;
+            public DateTime CreatedAt { get; set; } = DateTime.Now;
+            public DateTime UpdatedAt { get; set; }
 
+        }
     }
 }
