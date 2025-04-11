@@ -32,12 +32,9 @@ namespace Ecomm_Database_Class.Model
         public string? Phone { get; set; }
 
 
-        [Required(ErrorMessage = "Address is required")]
-        public string? ShippingAddresses { get; set; }
-
-
         [Required(ErrorMessage = "Payment Details is required")]
         public string? PaymentDetails { get; set; }
+
 
         public string Role { get; set; } = "user";
     }

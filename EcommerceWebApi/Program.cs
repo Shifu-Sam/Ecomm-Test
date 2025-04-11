@@ -21,6 +21,7 @@ builder.Services.AddScoped<ICartOperations, CartOperations>();
 builder.Services.AddScoped<IAdmin_Repo, Admin_Repo>();
 builder.Services.AddScoped<IOrderRepo, OrderRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IAddressRepo, AddressRepo>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
