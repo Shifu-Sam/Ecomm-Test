@@ -1,6 +1,7 @@
 ﻿using Ecomm_Database_Class.Data;
 using Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -60,8 +61,10 @@ namespace Ecomm_Database_Class.Repository
         // Optional: Hash password (implement securely)
         private string HashPassword(string password)
         {
-            // Use a secure hashing library (example placeholder)
-            return password; // Replace with actual hashing logic
+            User user = new User();
+
+            var hashedPassword = new PasswordHasher<User>().HashPassword(user, password);
+            return hashedPassword;
         }
     }
 }
