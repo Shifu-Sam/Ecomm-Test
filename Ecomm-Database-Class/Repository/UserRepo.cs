@@ -3,11 +3,6 @@ using Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ecomm_Database_Class.Repository
 {
@@ -24,6 +19,7 @@ namespace Ecomm_Database_Class.Repository
         public async Task CreateUserAsync(User user)
         {
             user.Password = HashPassword(user.Password);
+            user.Role = "user"; // Default role for new users
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
@@ -40,6 +36,10 @@ namespace Ecomm_Database_Class.Repository
             return await _context.Users.FindAsync(id);
         }
 
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
         // Update user details
         public async Task UpdateUserAsync(User user)
         {
@@ -58,11 +58,9 @@ namespace Ecomm_Database_Class.Repository
             }
         }
 
-        // Optional: Hash password (implement securely)
         private string HashPassword(string password)
         {
             User user = new User();
-
             var hashedPassword = new PasswordHasher<User>().HashPassword(user, password);
             return hashedPassword;
         }

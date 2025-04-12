@@ -36,6 +36,6 @@ namespace Ecomm_Database_Class.Model
         public string? PaymentDetails { get; set; }
 
 
-        public string Role { get; set; } = "user";
+        public string? Role { get; set; }
     }
 }

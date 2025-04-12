@@ -11,6 +11,9 @@ namespace Ecomm_Database_Class.JwtAuth
     {
         Task<AdminTable1?> AdminRegister(AdminTable1 adminTable);
         string CreateToken(AdminTable1 admin);
+        string CreateToken(User user);
+
+
 
     }
 }

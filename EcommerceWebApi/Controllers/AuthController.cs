@@ -14,11 +14,13 @@ namespace EcommerceWebApi.Controllers
     {
         private readonly IAuthServices _authServices;
         private readonly IAdmin_Repo _adminRepo;
+        private readonly IUserRepo _userRepo;
 
-        public AuthController(IAuthServices authServices, IAdmin_Repo adminRepo)
+        public AuthController(IAuthServices authServices, IAdmin_Repo adminRepo, IUserRepo userRepo)
         {
             _authServices = authServices;
             _adminRepo = adminRepo;
+            _userRepo = userRepo;
         }
 
         [HttpPost("RegisterAdmin")]
@@ -33,7 +35,7 @@ namespace EcommerceWebApi.Controllers
             return Ok(admin);
         }
 
-        [HttpPost("Login")]
+        [HttpPost("adminLogin")]
         public ActionResult<string> Login(AdminDto adminDto)
         {
             AdminTable1 admin = _adminRepo.GetAdminByEmail(adminDto.Email);
@@ -50,6 +52,24 @@ namespace EcommerceWebApi.Controllers
 
             string token = _authServices.CreateToken(admin);
 
+            return Ok(token);
+        }
+
+        [HttpPost("userLogin")]
+        public async Task<ActionResult<string>> Login(UserDto userDto)
+        {
+            User user = await _userRepo.GetUserByEmailAsync(userDto.Email);
+
+            if (user == null) 
+                return BadRequest("User does not exist");
+
+            if (new PasswordHasher<User>().VerifyHashedPassword(user, user.Password, userDto.Password)
+                == PasswordVerificationResult.Failed) 
+            {
+                return BadRequest("Wrong password");
+            }
+
+            string token = _authServices.CreateToken(user); 
             return Ok(token);
         }
 

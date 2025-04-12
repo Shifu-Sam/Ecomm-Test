@@ -17,6 +17,7 @@ namespace Ecomm_Database_Class.Repository.IRepository
 
         // Read (Get user by ID)
         Task<User> GetUserByIdAsync(int id);
+        Task<User> GetUserByEmailAsync(string email);
 
         // Update user details
         Task UpdateUserAsync(User user);

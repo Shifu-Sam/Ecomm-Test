@@ -1,14 +1,12 @@
 ﻿using Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
-using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Security.Cryptography;
 
 namespace Ecomm_Database_Class.JwtAuth
 {
@@ -18,11 +16,13 @@ namespace Ecomm_Database_Class.JwtAuth
 
         private readonly IAdmin_Repo _adminRepo;
         private readonly IConfiguration _configuration;
+        private readonly IUserRepo _userRepo;
 
-        public AuthServices(IConfiguration configuration, IAdmin_Repo adminRepo)
+        public AuthServices(IConfiguration configuration, IAdmin_Repo adminRepo , IUserRepo userRepo)
         {
             _configuration = configuration;
             _adminRepo = adminRepo;
+            _userRepo = userRepo;
         }
 
 
@@ -73,9 +73,9 @@ namespace Ecomm_Database_Class.JwtAuth
             return newAdmin;
         }
 
+        
 
-
-        #region Create JwtToken
+        #region Create JwtToken for admin
         
         public string CreateToken(AdminTable1 admin)
         {
@@ -102,8 +102,37 @@ namespace Ecomm_Database_Class.JwtAuth
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
+        #endregion
 
-        
+        #region create token for user
+
+        public string CreateToken(User user)
+        {
+            var claim = new List<Claim> {
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()) ,
+                new Claim(ClaimTypes.Role,user.Role)
+            };
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration.GetValue<string>("AppSettings:Token"))
+            );
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
+
+            var tokenDescriptor = new JwtSecurityToken(
+                issuer: _configuration.GetValue<string>("AppSettings:Issuer"),
+                audience: _configuration.GetValue<string>("AppSettings:audience"),
+                claims: claim,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        }
+
+
         #endregion
 
 
