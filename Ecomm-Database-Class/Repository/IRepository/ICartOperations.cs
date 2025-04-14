@@ -15,5 +15,7 @@ namespace Ecomm_Database_Class.Repository.IRepository
         Task AddCartAsync(Cart cart);
         Task UpdateCartAsync(Cart cart);
         Task DeleteCartAsync(int id);
+        Task<List<Cart>> GetCartsByUserIdAsync(int userId);
+        Task<List<Cart>> GetCartsByProductIdAsync(int productId);
     }
 }

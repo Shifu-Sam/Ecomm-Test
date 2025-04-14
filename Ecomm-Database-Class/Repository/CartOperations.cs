@@ -52,5 +52,22 @@ namespace Ecomm_Database_Class.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+        //get all cart items by UserId
+        public async Task<List<Cart>> GetCartsByUserIdAsync(int userId)
+        {
+            return await _context.CartItems
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
+        }
+
+        // Get all cart items by ProductId
+        public async Task<List<Cart>> GetCartsByProductIdAsync(int productId)
+        {
+            return await _context.CartItems
+                .Where(c => c.ProductId == productId)
+                .ToListAsync();
+        }
     }
+
 }

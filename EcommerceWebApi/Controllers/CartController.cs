@@ -112,5 +112,38 @@ namespace EcommerceWebApi.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        [HttpGet("userId/{userId:int}")]
+        public async Task<IActionResult> GetAllCartsByUserId(int userId)
+        {
+            try
+            {
+
+                List<Cart> carts = await _cartOperations.GetCartsByUserIdAsync(userId);
+                return Ok(carts);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (not shown here for brevity)
+                return StatusCode(500, "Internal server error");
+            }
+
+        }
+
+        [HttpGet("productId/{productId:int}")]
+
+        public async Task<IActionResult> GetAllCartsByProductId(int productId)
+        {
+            try
+            {
+                List<Cart> carts = await _cartOperations.GetCartsByProductIdAsync(productId);
+                return Ok(carts);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (not shown here for brevity)
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }

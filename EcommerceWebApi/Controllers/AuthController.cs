@@ -64,16 +64,19 @@ namespace EcommerceWebApi.Controllers
         {
             User user = await _userRepo.GetUserByEmailAsync(userDto.Email);
 
-            if (user == null) 
+            if (user == null)
                 return BadRequest("User does not exist");
 
+            if (string.IsNullOrEmpty(user.Password))
+                return BadRequest("User password is not set");
+
             if (new PasswordHasher<User>().VerifyHashedPassword(user, user.Password, userDto.Password)
-                == PasswordVerificationResult.Failed) 
+                == PasswordVerificationResult.Failed)
             {
                 return BadRequest("Wrong password");
             }
 
-            string token = _authServices.CreateToken(user); 
+            string token = _authServices.CreateToken(user);
             return Ok(token);
         }
 
