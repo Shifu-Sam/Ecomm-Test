@@ -1,5 +1,6 @@
 ﻿using Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,7 @@ namespace EcommerceWebApi.Controllers
             _repo = repo;
         }
 
+        [Authorize(Roles = "admin,user")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -23,6 +25,7 @@ namespace EcommerceWebApi.Controllers
             return Ok(subCategories);
         }
 
+        [Authorize(Roles = "admin,user")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -30,6 +33,7 @@ namespace EcommerceWebApi.Controllers
             return subCategory == null ? NotFound() : Ok(subCategory);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Create(SubCategory subCategory)
         {
@@ -37,6 +41,7 @@ namespace EcommerceWebApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.SubCategoryId }, created);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, SubCategory subCategory)
         {
@@ -45,6 +50,7 @@ namespace EcommerceWebApi.Controllers
             return updated == null ? NotFound() : Ok(updated);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

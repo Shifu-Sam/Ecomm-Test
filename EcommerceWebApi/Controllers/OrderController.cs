@@ -1,6 +1,7 @@
 ﻿using Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Repository;
 using Ecomm_Database_Class.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace EcommerceWebApi.Controllers
             _orderRepo = orderRepo;
         }
 
+        [Authorize(Roles = "admin,user")]
         [HttpGet]
         public async Task<ActionResult<List<Order>>> GetAllOrders()
         {
@@ -24,6 +26,7 @@ namespace EcommerceWebApi.Controllers
             return Ok(orders);
         }
 
+        [Authorize(Roles = "admin,user")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrderById(int id)
         {
@@ -35,6 +38,7 @@ namespace EcommerceWebApi.Controllers
             return Ok(order);
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost]
         public async Task<ActionResult> PlaceOrder(Order order)
         {
@@ -42,6 +46,7 @@ namespace EcommerceWebApi.Controllers
             return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderID }, order);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}/status")]
         public async Task<ActionResult> UpdateOrderStatus(int id, [FromBody] string status)
         {
@@ -49,6 +54,7 @@ namespace EcommerceWebApi.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}/payment")]
         public async Task<ActionResult> ProcessPayment(int id, [FromBody] string paymentStatus)
         {
@@ -56,6 +62,7 @@ namespace EcommerceWebApi.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteOrder(int id)
         {
@@ -63,6 +70,7 @@ namespace EcommerceWebApi.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<List<Order>>> GetOrdersByUserId(int userId)
         {

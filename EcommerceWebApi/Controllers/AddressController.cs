@@ -1,5 +1,6 @@
 ﻿using Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,7 @@ namespace EcommerceWebApi.Controllers
             _context = addressRepo;
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost]
         public async Task<IActionResult> AddAddress([FromBody] Address address)
         {
@@ -26,6 +28,7 @@ namespace EcommerceWebApi.Controllers
             return Ok(new { message = "Address added successfully." });
         }
 
+        [Authorize(Roles = "user")]
         [HttpGet("{addressId}")]
         public async Task<IActionResult> GetAddressById(int addressId)
         {
@@ -37,6 +40,7 @@ namespace EcommerceWebApi.Controllers
             return Ok(address);
         }
 
+        [Authorize(Roles = "user")]
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetAddressesByUserId(int userId)
         {
@@ -48,6 +52,7 @@ namespace EcommerceWebApi.Controllers
             return Ok(addresses);
         }
 
+        [Authorize(Roles = "user")]
         [HttpPut("{addressId}")]
         public async Task<IActionResult> UpdateAddress(int addressId, [FromBody] Address address)
         {
@@ -60,10 +65,7 @@ namespace EcommerceWebApi.Controllers
 
             try
             {
-                // Detach the existing entity to avoid tracking conflicts
-
-                //400 Undocumented Error: response status is 400 Response body Download { "message": "Error updating the address: The instance of entity type 'Address' cannot be tracked because another instance with the same key value for {'AddressId'} is already being tracked. When attaching existing entities, ensure that only one entity instance with a given key value is attached. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the conflicting key values." }
-                //To overcome above error i have added this line
+                
                 _context.DetachEntity(existingAddress);
 
                 // Update the address
@@ -76,7 +78,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
-
+        [Authorize(Roles = "user")]
         [HttpDelete("{addressId}")]
         public async Task<IActionResult> DeleteAddress(int addressId)
         {

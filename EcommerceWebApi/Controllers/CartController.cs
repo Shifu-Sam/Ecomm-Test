@@ -1,6 +1,7 @@
 ﻿using Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Model.Ecomm_Database_Class.Model;
 using Ecomm_Database_Class.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace EcommerceWebApi.Controllers
             _cartOperations = cartOperations;
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllCarts()
         {
@@ -34,6 +36,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetCartById(int id)
         {
@@ -53,6 +56,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost]
         public async Task<IActionResult> AddCart([FromBody] Cart cart)
         {
@@ -72,6 +76,7 @@ namespace EcommerceWebApi.Controllers
             return BadRequest(ModelState);
         }
 
+        [Authorize(Roles = "user")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateCart(int id, [FromBody] Cart cart)
         {
@@ -92,6 +97,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCart(int id)
         {

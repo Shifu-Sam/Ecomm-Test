@@ -18,7 +18,7 @@ namespace EcommerceWebApi.Controllers
             _context = context;
         }
 
-        // Create User
+        [Authorize(Roles = "user")]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(User user)
         {
@@ -33,7 +33,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
-        // Get All Users
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -48,7 +48,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
-        // Get User by ID
+        [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
@@ -67,7 +67,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
-        // Update User
+        [Authorize(Roles = "admin,user")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
         {
@@ -86,7 +86,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
-        // Delete User
+        [Authorize(Roles = "admin,user")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

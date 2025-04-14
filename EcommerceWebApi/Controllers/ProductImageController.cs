@@ -1,10 +1,12 @@
 ﻿using Ecomm_Database_Class.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")] 
     public class ProductImageController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -13,6 +15,7 @@ namespace EcommerceWebApi.Controllers
         {
             _context = context;
         }
+
 
         [HttpPost("{productId}/upload")]
         public async Task<IActionResult> UploadProductImage(int productId, IFormFile file)

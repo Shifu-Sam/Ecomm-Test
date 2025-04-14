@@ -16,6 +16,7 @@ namespace Ecomm_Database_Class.Controllers
             _adminRepo = adminRepo;
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [Route("InsertAdmin")]
         public IActionResult InsertAdmin([FromBody] AdminTable1 admin)
@@ -36,6 +37,7 @@ namespace Ecomm_Database_Class.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet]
         [Route("GetAdminById/{id}")]
         public IActionResult GetAdminById(int id)
@@ -49,6 +51,7 @@ namespace Ecomm_Database_Class.Controllers
             return Ok(admin);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut]
         [Route("UpdateAdmin")]
         public IActionResult UpdateAdmin([FromBody] AdminTable1 admin)

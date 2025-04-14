@@ -74,7 +74,6 @@ namespace Ecomm_Database_Class.JwtAuth
         }
 
         
-
         #region Create JwtToken for admin
         
         public string CreateToken(AdminTable1 admin)
