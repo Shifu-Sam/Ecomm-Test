@@ -35,17 +35,17 @@ namespace Ecomm_Database_Class.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>()
-                .HasOne<Category>() 
-                .WithMany()
-                .HasForeignKey(sc => sc.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // modelBuilder.Entity<Product>()
+            //     .HasOne<Category>() 
+            //     .WithMany()
+            //     .HasForeignKey(sc => sc.CategoryId)
+            //     .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Product>()
-                .HasOne<SubCategory>()
-                .WithMany()
-                .HasForeignKey(sc => sc.SubCategoryId)
-                .OnDelete(DeleteBehavior.NoAction);
+            // modelBuilder.Entity<Product>()
+            //     .HasOne<SubCategory>()
+            //     .WithMany()
+            //     .HasForeignKey(sc => sc.SubCategoryId)
+            //     .OnDelete(DeleteBehavior.NoAction);
 
             // Seed Category
             modelBuilder.Entity<Category>().HasData(
