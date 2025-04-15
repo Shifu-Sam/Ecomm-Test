@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecomm_Database_Class.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250411114041_Mig1")]
-    partial class Mig1
+    [Migration("20250415055808_Mig1FinalMigration")]
+    partial class Mig1FinalMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -206,10 +206,6 @@ namespace Ecomm_Database_Class.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("SubCategoryId");
-
                     b.ToTable("Products");
 
                     b.HasData(
@@ -255,8 +251,6 @@ namespace Ecomm_Database_Class.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
                 });
@@ -326,38 +320,11 @@ namespace Ecomm_Database_Class.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Ecomm_Database_Class.Model.Product", b =>
-                {
-                    b.HasOne("Ecomm_Database_Class.Model.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Ecomm_Database_Class.Model.SubCategory", null)
-                        .WithMany()
-                        .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Ecomm_Database_Class.Model.ProductImage", b =>
-                {
-                    b.HasOne("Ecomm_Database_Class.Model.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }
