@@ -1,64 +1,164 @@
-﻿using Ecomm_Database_Class.Data;
-using Microsoft.AspNetCore.Authorization;
+using Ecomm_Database_Class.Model;
+using Ecomm_Database_Class.Repository.IRepository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace EcommerceWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin")] 
+    [Authorize(Roles = "admin")]
     public class ProductImageController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IProductImageRepo _productImageRepo;
+        private readonly IProductRepository _productRepo;
+        private readonly string _imageDirectory = "wwwroot/images";
 
-        public ProductImageController(AppDbContext context)
+        public ProductImageController(IProductImageRepo productImageRepo, IProductRepository productRepo)
         {
-            _context = context;
+            _productImageRepo = productImageRepo;
+            _productRepo = productRepo;
         }
 
+        // GET: api/ProductImage/{productId}
+        [HttpGet("{productId}")]
+        public async Task<ActionResult<IEnumerable<ProductImage>>> GetProductImages(int productId)
+        {
+            var productImages = await _productImageRepo.GetProductImagesAsync(productId);
+            return Ok(productImages);
+        }
 
+        // GET: api/ProductImage/{id}
+        [HttpGet("image/{id}")]
+        public async Task<ActionResult<ProductImage>> GetProductImage(int id)
+        {
+            var productImage = await _productImageRepo.GetProductImageAsync(id);
+            if (productImage == null)
+            {
+                return NotFound();
+            }
+            return Ok(productImage);
+        }
+
+        // POST: api/ProductImage/{productId}/upload
         [HttpPost("{productId}/upload")]
         public async Task<IActionResult> UploadProductImage(int productId, IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded.");
 
-            var filePath = Path.Combine("wwwroot/images", file.FileName);
+            var filePath = Path.Combine(_imageDirectory, file.FileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _productRepo.GetAllAsync(productId);
             if (product == null)
                 return NotFound("Product not found.");
 
-            product.ImageUrl = filePath;
-            await _context.SaveChangesAsync();
+            var productImage = new ProductImage
+            {
+                ImagePath = filePath,
+                ProductId = productId
+            };
 
-            return Ok(new { product.Id, product.ImageUrl });
+            await _productImageRepo.AddProductImageAsync(productImage);
+
+            // Update the Product's ImageUrl property
+            product.ImageUrl = filePath;
+            await _productRepo.UpdateAsync(product);
+
+            return CreatedAtAction(nameof(GetProductImage), new { id = productImage.Id }, productImage);
         }
 
-        [HttpDelete("{productId}/delete")]
-        public async Task<IActionResult> DeleteProductImage(int productId)
+        // DELETE: api/ProductImage/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProductImage(int id)
         {
-            var product = await _context.Products.FindAsync(productId);
-            if (product == null)
-                return NotFound("Product not found.");
+            var productImage = await _productImageRepo.GetProductImageAsync(id);
+            if (productImage == null)
+                return NotFound("Product image not found.");
 
-            if (!string.IsNullOrEmpty(product.ImageUrl))
+            if (System.IO.File.Exists(productImage.ImagePath))
             {
-                var filePath = product.ImageUrl;
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-                product.ImageUrl = null;
-                await _context.SaveChangesAsync();
+                System.IO.File.Delete(productImage.ImagePath);
             }
 
+            await _productImageRepo.DeleteProductImageAsync(id);
             return NoContent();
         }
     }
 }
+
+
+
+
+// using Ecomm_Database_Class.Data;
+// using Microsoft.AspNetCore.Authorization;
+// using Microsoft.AspNetCore.Mvc;
+
+// namespace EcommerceWebApi.Controllers
+// {
+//     [Route("api/[controller]")]
+//     [ApiController]
+//     [Authorize(Roles = "admin")] 
+//     public class ProductImageController : ControllerBase
+//     {
+//         private readonly AppDbContext _context;
+
+//         public ProductImageController(AppDbContext context)
+//         {
+//             _context = context;
+//         }
+
+
+//         [HttpPost("{productId}/upload")]
+//         public async Task<IActionResult> UploadProductImage(int productId, IFormFile file)
+//         {
+//             if (file == null || file.Length == 0)
+//                 return BadRequest("No file uploaded.");
+
+//             var filePath = Path.Combine("wwwroot/images", file.FileName);
+
+//             using (var stream = new FileStream(filePath, FileMode.Create))
+//             {
+//                 await file.CopyToAsync(stream);
+//             }
+
+//             var product = await _context.Products.FindAsync(productId);
+//             if (product == null)
+//                 return NotFound("Product not found.");
+
+//             product.ImageUrl = filePath;
+//             await _context.SaveChangesAsync();
+
+//             return Ok(new { product.Id, product.ImageUrl });
+//         }
+
+//         [HttpDelete("{productId}/delete")]
+//         public async Task<IActionResult> DeleteProductImage(int productId)
+//         {
+//             var product = await _context.Products.FindAsync(productId);
+//             if (product == null)
+//                 return NotFound("Product not found.");
+
+//             if (!string.IsNullOrEmpty(product.ImageUrl))
+//             {
+//                 var filePath = product.ImageUrl;
+//                 if (System.IO.File.Exists(filePath))
+//                 {
+//                     System.IO.File.Delete(filePath);
+//                 }
+//                 product.ImageUrl = null;
+//                 await _context.SaveChangesAsync();
+//             }
+
+//             return NoContent();
+//         }
+//     }
+// }
