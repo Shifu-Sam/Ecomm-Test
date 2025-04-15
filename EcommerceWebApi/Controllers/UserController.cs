@@ -18,7 +18,6 @@ namespace EcommerceWebApi.Controllers
             _context = context;
         }
 
-        //[Authorize(Roles = "user")]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(User user)
         {
