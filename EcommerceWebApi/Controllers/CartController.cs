@@ -113,6 +113,7 @@ namespace EcommerceWebApi.Controllers
             }
         }
 
+        [Authorize("admin")]
         [HttpGet("userId/{userId:int}")]
         public async Task<IActionResult> GetAllCartsByUserId(int userId)
         {
@@ -130,6 +131,7 @@ namespace EcommerceWebApi.Controllers
 
         }
 
+        [Authorize("admin")]
         [HttpGet("productId/{productId:int}")]
 
         public async Task<IActionResult> GetAllCartsByProductId(int productId)

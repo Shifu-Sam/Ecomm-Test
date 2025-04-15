@@ -24,7 +24,6 @@ namespace EcommerceWebApi.Controllers
             _userRepo = userRepo;
         }
 
-        [Authorize(Roles = "admin")]
         [HttpPost("RegisterAdmin")]
         public async Task<ActionResult<AdminTable1>> Register(AdminTable1 adminTable)
         {
@@ -37,7 +36,6 @@ namespace EcommerceWebApi.Controllers
             return Ok(admin);
         }
 
-        [Authorize(Roles = "admin")]
         [HttpPost("adminLogin")]
         public ActionResult<string> Login(AdminDto adminDto)
         {
@@ -58,7 +56,6 @@ namespace EcommerceWebApi.Controllers
             return Ok(token);
         }
 
-        [Authorize(Roles = "admin")]
         [HttpPost("userLogin")]
         public async Task<ActionResult<string>> Login(UserDto userDto)
         {
