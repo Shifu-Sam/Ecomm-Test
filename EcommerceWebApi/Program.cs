@@ -42,16 +42,17 @@ builder.Services.AddIdentityCore<IdentityUser>()
     .AddEntityFrameworkStores<EcommAuthDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    // Password settings
-    options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
-    
-});
+//builder.Services.Configure<IdentityOptions>(options =>
+//{
+//    // Password settings
+//    options.Password.RequireDigit = false;
+//    options.Password.RequiredLength = 6;
+//    options.Password.RequireNonAlphanumeric = false;
+//    options.Password.RequireUppercase = false;
+//    options.Password.RequireLowercase = false;
+
+//});
+
 //Jwt 
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 
