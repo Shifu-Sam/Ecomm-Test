@@ -28,24 +28,12 @@ namespace Ecomm_Database_Class.Data
         public DbSet<Address> Addresses { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=ECommerce;Integrated Security=True;TrustServerCertificate=true");
+            optionsBuilder.UseSqlServer(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            // modelBuilder.Entity<Product>()
-            //     .HasOne<Category>() 
-            //     .WithMany()
-            //     .HasForeignKey(sc => sc.CategoryId)
-            //     .OnDelete(DeleteBehavior.Cascade);
-
-            // modelBuilder.Entity<Product>()
-            //     .HasOne<SubCategory>()
-            //     .WithMany()
-            //     .HasForeignKey(sc => sc.SubCategoryId)
-            //     .OnDelete(DeleteBehavior.NoAction);
 
             // Seed Category
             modelBuilder.Entity<Category>().HasData(
@@ -90,7 +78,8 @@ namespace Ecomm_Database_Class.Data
         #region DB1
         public class DB1
         {
-            static SqlConnection connection = new SqlConnection("Data Source=localhost;Initial Catalog=ECommerce;Integrated Security=True;TrustServerCertificate=true");
+            private static SqlConnection connection = new SqlConnection(new AppDbContext(new DbContextOptions<AppDbContext>()).connectionString);
+
 
             #region Connection
             public SqlConnection GetConnection()
