@@ -14,7 +14,7 @@ namespace Ecomm_Database_Class.Data
     public class AppDbContext : DbContext
     {
         public string connectionString = "Data Source=localhost;Initial Catalog=ECommerce;Integrated Security=True;TrustServerCertificate=true"; 
-        public AppDbContext(DbContextOptions options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
@@ -79,7 +79,6 @@ namespace Ecomm_Database_Class.Data
         public class DB1
         {
             private static SqlConnection connection = new SqlConnection(new AppDbContext(new DbContextOptions<AppDbContext>()).connectionString);
-
 
             #region Connection
             public SqlConnection GetConnection()
