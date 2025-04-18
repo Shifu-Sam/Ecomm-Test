@@ -114,6 +114,27 @@ namespace EcommerceWebApi.Controllers
             return Ok("User registered successfully");
         }
 
+        [HttpPost]
+        [Route("Login")]
+
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+        {
+            var user = await userManager.FindByEmailAsync(loginRequestDto.Email);
+
+            if (user != null)
+            {
+                var checkPasswordResult =  await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+
+                if (checkPasswordResult)
+                {
+                    // Create jwt token
+                    return Ok("LoggedIn");
+                }
+            }
+
+            return BadRequest("User does exist");
+        }
+
 
 
     }
