@@ -1,4 +1,6 @@
-﻿using Ecomm_Database_Class.Model.DTO;
+﻿using Ecomm_Database_Class.JwtAuth;
+using Ecomm_Database_Class.Model.DTO;
+using Ecomm_Database_Class.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,17 +10,20 @@ namespace EcommerceWebApi.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        //private readonly IAuthServices _authServices;
-        //private readonly IAdmin_Repo _adminRepo;
-        //private readonly IUserRepo _userRepo;
+        private readonly IAuthServices _authServices;
+        private readonly IAdmin_Repo _adminRepo;
+        private readonly IUserRepo _userRepo;
+        private readonly UserManager<IdentityUser> userManager;
 
-        //public AuthController(IAuthServices authServices, IAdmin_Repo adminRepo, IUserRepo userRepo)
-        //{
-        //    _authServices = authServices;
-        //    _adminRepo = adminRepo;
-        //    _userRepo = userRepo;
-        //}
+        public AuthController(IAuthServices authServices, IAdmin_Repo adminRepo, IUserRepo userRepo, UserManager<IdentityUser> userManager)
+        {
+            _authServices = authServices;
+            _adminRepo = adminRepo;
+            _userRepo = userRepo;
+            this.userManager = userManager;
+        }
 
+       
         //[HttpPost("RegisterAdmin")]
         //public async Task<ActionResult<AdminTable1>> Register(AdminTable1 adminTable)
         //{
@@ -72,12 +77,7 @@ namespace EcommerceWebApi.Controllers
         //    return Ok(token);
         //}
 
-        private readonly UserManager<IdentityUser> userManager;
 
-        public AuthController(UserManager<IdentityUser> userManager)
-        {
-            this.userManager = userManager;
-        }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
@@ -116,24 +116,34 @@ namespace EcommerceWebApi.Controllers
 
         [HttpPost]
         [Route("Login")]
-
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
+            // Check if the user exists
             var user = await userManager.FindByEmailAsync(loginRequestDto.Email);
-
-            if (user != null)
+            if (user == null)
             {
-                var checkPasswordResult =  await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
-
-                if (checkPasswordResult)
-                {
-                    // Create jwt token
-                    return Ok("LoggedIn");
-                }
+                return BadRequest("User does not exist");
             }
 
-            return BadRequest("User does exist");
+            // Verify the password
+            var checkPasswordResult = await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+            if (!checkPasswordResult)
+            {
+                return BadRequest("Invalid password");
+            }
+
+            // Get roles
+            var roles = await userManager.GetRolesAsync(user);
+            if (roles == null || !roles.Any())
+            {
+                return BadRequest("User has no roles assigned");
+            }
+
+            // Create JWT token
+            var token = _authServices.CreateToken(user, roles.ToList());
+            return Ok(new { Token = token });
         }
+
 
 
 

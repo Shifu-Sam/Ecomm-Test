@@ -35,6 +35,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
 builder.Services.AddScoped<IProductImageRepo, ProductImageRepo>();
 
+
 // Identity
 builder.Services.AddIdentityCore<IdentityUser>()
     .AddRoles<IdentityRole>()
@@ -42,16 +43,21 @@ builder.Services.AddIdentityCore<IdentityUser>()
     .AddEntityFrameworkStores<EcommAuthDbContext>()
     .AddDefaultTokenProviders();
 
-//builder.Services.Configure<IdentityOptions>(options =>
-//{
-//    // Password settings
-//    options.Password.RequireDigit = false;
-//    options.Password.RequiredLength = 6;
-//    options.Password.RequireNonAlphanumeric = false;
-//    options.Password.RequireUppercase = false;
-//    options.Password.RequireLowercase = false;
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
 
-//});
+});
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<EcommAuthDbContext>();
 
 //Jwt 
 builder.Services.AddScoped<IAuthServices, AuthServices>();
@@ -121,5 +127,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapIdentityApi<IdentityUser>();
 
 app.Run();
